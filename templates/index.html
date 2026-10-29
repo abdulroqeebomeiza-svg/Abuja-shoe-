@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BO YII - Abuja Luxury Shoes</title>
+<style>
+body{margin:0;font-family:sans-serif;background:#FFF8E7;color:#5D2A42}
+header{background:linear-gradient(135deg,#5D2A42,#8B5E83);padding:16px;color:white;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:24px;font-weight:bold;letter-spacing:2px}
+.logo span{color:#FFD700}
+.cart-btn{background:#FFD700;color:#5D2A42;padding:8px 16px;border-radius:20px;text-decoration:none;font-weight:bold}
+.hero{background:linear-gradient(90deg,#FFD700,#FF6B35);padding:40px 20px;text-align:center;color:white}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;padding:20px}
+.card{background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.card img{width:100%;height:220px;object-fit:cover}
+.card-body{padding:16px}
+.price{color:#FF6B35;font-weight:bold;font-size:18px}
+.btn{width:100%;background:linear-gradient(90deg,#5D2A42,#FF6B35);color:white;border:none;padding:12px;border-radius:30px;margin-top:10px;font-weight:bold}
+footer{text-align:center;padding:20px;background:#5D2A42;color:white;margin-top:20px}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">BO <span>YII</span> ABUJA</div>
+<a class="cart-btn" href="/cart">Cart ({{cart_count}})</a>
+</header>
+<div class="hero"><h1>Abuja's Finest Footwear</h1><p>Luxury | Style | Comfort - Delivered across Nigeria</p></div>
+<div class="grid">
+{% for p in products %}
+<div class="card">
+<img src="{{p.image}}">
+<div class="card-body">
+<h3>{{p.name}}</h3><p>{{p.desc}}</p>
+<div class="price">₦{{"{:,}".format(p.price)}}</div>
+<button class="btn" onclick="addToCart({{p.id}})">Add to Cart</button>
+</div></div>
+{% endfor %}
+</div>
+<footer>© 2026 BO YII Fashion - Wuse 2, Abuja | Pay with Paystack Secure</footer>
+<script>
+function addToCart(id){
+fetch('/add_to_cart',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})})
+.then(r=>r.json()).then(d=>{if(d.success){alert('Added to cart!'); location.reload();}})
+}
+</script>
+</body>
+</html>
