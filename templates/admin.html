@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin - BO YII</title>
+<style>
+body{margin:0;font-family:sans-serif;background:#FFF8E7;padding:20px;color:#5D2A42}
+header{display:flex;justify-content:space-between}
+.card{background:white;padding:16px;border-radius:12px;margin:12px 0;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.badge{background:#FFD700;padding:4px 10px;border-radius:20px;font-size:12px}
+a{color:#FF6B35;text-decoration:none;font-weight:bold}
+table{width:100%;border-collapse:collapse}
+th,td{padding:8px;text-align:left;border-bottom:1px solid #eee}
+</style>
+</head>
+<body>
+<header><h2>BO YII Admin Panel</h2><a href="/logout">Logout</a></header>
+<div class="card"><h3>Revenue: ₦{{"{:,}".format(total_revenue)}}</h3><p>Total Orders: {{orders|length}}</p></div>
+<h3>Orders</h3>
+{% for o in orders %}
+<div class="card">
+<b>Ref:</b> {{o.ref}} <span class="badge">₦{{"{:,}".format(o.total)}}</span><br>
+<b>Email:</b> {{o.email}}<br>
+<small>{% for i in o['items'] %}{{i.name}}, {% endfor %}</small>
+</div>
+{% else %}
+<div class="card">No orders yet - share your link to get sales!</div>
+{% endfor %}
+<h3>Products ({{products|length}})</h3>
+<table><tr><th>Name</th><th>Price</th></tr>
+{% for p in products %}<tr><td>{{p.name}}</td><td>₦{{"{:,}".format(p.price)}}</td></tr>{% endfor %}
+</table>
+<br><a href="/">← View Shop</a>
+</body>
+</html>
