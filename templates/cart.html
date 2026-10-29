@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cart - BO YII</title>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<style>
+body{margin:0;font-family:sans-serif;background:#FFF8E7;color:#5D2A42;padding:20px}
+a{color:#FF6B35}
+.item{background:white;padding:12px;margin:10px 0;border-radius:10px;display:flex;justify-content:space-between}
+.total{font-size:22px;font-weight:bold;margin:20px 0}
+.btn{padding:14px 24px;border:none;border-radius:30px;font-weight:bold;cursor:pointer}
+.pay{background:linear-gradient(90deg,#FFD700,#FF6B35);color:white;width:100%}
+</style>
+</head>
+<body>
+<a href="/">← Back to Shop</a>
+<h1>Your Cart ({{cart_count}})</h1>
+{% if cart %}
+{% for item in cart %}
+<div class="item"><span>{{item.name}}</span><span>₦{{"{:,}".format(item.price)}} <a href="/remove_from_cart/{{loop.index0}}">[x]</a></span></div>
+{% endfor %}
+<div class="total">Total: ₦{{"{:,}".format(total)}}</div>
+<input id="email" type="email" placeholder="Your email for receipt" style="width:100%;padding:12px;border-radius:10px;border:1px solid #ccc;margin-bottom:12px">
+<button class="btn pay" onclick="pay()">Pay with Paystack</button>
+{% else %}
+<p>Cart empty. <a href="/">Shop now</a></p>
+{% endif %}
+<script>
+function pay(){
+var email=document.getElementById('email').value;
+if(!email){alert('Enter email'); return;}
+var handler=PaystackPop.setup({
+key:'{{paystack_public_key}}',
+email:email,
+amount:{{total}}*100,
+currency:'NGN',
+ref:''+Math.floor(Math.random()*1000000000+1),
+callback:function(response){
+fetch('/paystack/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reference:response.reference,email:email})})
+.then(r=>r.json()).then(d=>{if(d.status){window.location='/success';}else{alert('Payment verify failed');}});
+},
+onClose:function(){alert('Payment cancelled');}
+});
+handler.openIframe();
+}
+</script>
+</body>
+</html>
